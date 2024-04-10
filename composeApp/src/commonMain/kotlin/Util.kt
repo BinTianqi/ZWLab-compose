@@ -14,3 +14,12 @@ fun addZW(input:String, type:String):String{
     }
     return builder.toString()
 }
+
+fun removeZW(input: String):String{
+    var output = input
+    val zwSet = mutableSetOf("\u200B", "\u200C", "\u200D", "\u200E")
+    for(zw in zwSet){
+        output = output.replace(zw,"")
+    }
+    return output
+}
