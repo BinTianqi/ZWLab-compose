@@ -43,6 +43,7 @@ private fun EscapeRegex(){
     ){
         var input by remember{mutableStateOf("")}
         var output by remember{mutableStateOf("")}
+        var selectedZW by remember{mutableStateOf("d")}
         Image(
             painter = painterResource(Res.drawable.compose_multiplatform),contentDescription = null,
             modifier = Modifier.size(200.dp)
@@ -52,19 +53,12 @@ private fun EscapeRegex(){
             label = {Text(text = "Input")},
             modifier = Modifier.fillMaxWidth()
         )
+        RadioButtonItem(text = "Zero-width space", selected = selectedZW=="b", onClick = {selectedZW = "b"})
+        RadioButtonItem(text = "Zero-width non-joiner", selected = selectedZW=="c", onClick = {selectedZW = "c"})
+        RadioButtonItem(text = "Zero-width joiner", selected = selectedZW=="d", onClick = {selectedZW = "d"})
+        RadioButtonItem(text = "Left-to-right mark", selected = selectedZW=="e", onClick = {selectedZW = "e"})
         Button(
-            onClick = {
-                val length = input.length
-                var count = 0
-                var index = 0
-                val builder = StringBuilder(input)
-                while(count<length){
-                    builder.insert(index,"\u200D")
-                    count+=1
-                    index+=2
-                }
-                output = builder.toString()
-            }
+            onClick = {output = addZW(input,selectedZW)}
         ){
             Text(text = "Go!")
         }
