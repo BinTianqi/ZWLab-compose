@@ -32,14 +32,24 @@ fun App() {
                         icon = {Icon(painterResource(Res.drawable.add_fill0),contentDescription = null)}
                     )
                     NavigationBarItem(
+                        selected = page == "Remove", label = {Text(text = "Remove")},
+                        onClick = {page = "Remove"},
+                        icon = {Icon(painterResource(Res.drawable.remove_fill0),contentDescription = null)}
+                    )
+                    NavigationBarItem(
                         selected = page == "ZWList", label = {Text(text = "ZW list")},
                         onClick = {page = "ZWList"},
                         icon = {Icon(painterResource(Res.drawable.glyphs_fill0),contentDescription = null)}
                     )
                     NavigationBarItem(
-                        selected = page == "Remove", label = {Text(text = "Remove")},
-                        onClick = {page = "Remove"},
-                        icon = {Icon(painterResource(Res.drawable.remove_fill0),contentDescription = null)}
+                        selected = page == "Encode", label = {Text(text = "Encode")},
+                        onClick = {page = "Encode"},
+                        icon = {Icon(painterResource(Res.drawable.lock_fill0),contentDescription = null)}
+                    )
+                    NavigationBarItem(
+                        selected = page == "Decode", label = {Text(text = "Decode")},
+                        onClick = {page = "Decode"},
+                        icon = {Icon(painterResource(Res.drawable.lock_open_right_fill0),contentDescription = null)}
                     )
                 }
             }
@@ -54,7 +64,171 @@ fun App() {
             if(page=="ZWList"){
                 ZWList(paddingValues)
             }
+            if(page=="Encode"){
+                EncodeZW(paddingValues)
+            }
+            if(page=="Decode"){
+                DecodeZW(paddingValues)
+            }
         }
+    }
+}
+
+@Composable
+fun DecodeZW(paddingValues: PaddingValues){
+    var visible by remember{mutableStateOf("")}
+    var hidden by remember{mutableStateOf("")}
+    var input by remember{mutableStateOf("")}
+    var expandVisible by remember{mutableStateOf(true)}
+    var expandHidden by remember{mutableStateOf(true)}
+    var expandInput by remember{mutableStateOf(true)}
+    val focusManager = LocalFocusManager.current
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp).verticalScroll(rememberScrollState())
+    ){
+        Spacer(Modifier.padding(vertical = 10.dp))
+        TextField(
+            value = input, onValueChange = {input = it},
+            label = {Text(text = "Input")},
+            trailingIcon = if(input.contains("\n")){ {ExpandIcon(expandInput) {expandInput = !expandInput}} }else{ null },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = !expandInput
+        )
+        Spacer(Modifier.padding(vertical = 2.dp))
+        Button(
+            onClick = {
+                focusManager.clearFocus()
+                decode(input).let{
+                    visible = it.first
+                    hidden = it.second
+                }
+                expandInput = false
+            }
+        ){
+            Text(text = " Go! ")
+        }
+        Spacer(Modifier.padding(vertical = 3.dp))
+        AnimatedVisibility(visible!=""||hidden!=""){
+            Column{
+                TextField(
+                    value = visible, onValueChange = {visible = it},
+                    label = {Text(text = "Visible Text")},
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = if(visible.contains("\n")){ {ExpandIcon(expandVisible) {expandVisible = !expandVisible}} }else{ null },
+                    singleLine = !expandVisible
+                )
+                Spacer(Modifier.padding(vertical = 2.dp))
+                TextField(
+                    value = hidden, onValueChange = {hidden = it},
+                    label = {Text(text = "Hidden Text")},
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = if(hidden.contains("\n")){ {ExpandIcon(expandHidden) {expandHidden = !expandHidden}} }else{ null },
+                    singleLine = !expandHidden
+                )
+                Spacer(Modifier.padding(vertical = 3.dp))/*
+                var copying by remember{mutableStateOf(false)}
+                val coroutine = rememberCoroutineScope()
+                Button(
+                    onClick = {
+                        copying = true
+                        coroutine.launch{delay(1500); copying = false}
+                        writeClipBoard(input)
+                    },
+                    modifier = Modifier.animateContentSize().align(Alignment.End)
+                ){
+                    Row(verticalAlignment = Alignment.CenterVertically){
+                        Icon(painter = painterResource(Res.drawable.content_copy_fill0), contentDescription = null)
+                        Text(text = if(copying){"  Copied"}else{"  Copy"})
+                    }
+                }*/
+            }
+        }
+        Spacer(Modifier.padding(top = paddingValues.calculateBottomPadding(), bottom = 60.dp).imePadding())
+    }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun EncodeZW(paddingValues: PaddingValues){
+    var visible1 by remember{mutableStateOf("")}
+    var hidden by remember{mutableStateOf("")}
+    var visible2 by remember{mutableStateOf("")}
+    var output by remember{mutableStateOf("")}
+    var expandVisible1 by remember{mutableStateOf(true)}
+    var expandHidden by remember{mutableStateOf(true)}
+    var expandVisible2 by remember{mutableStateOf(true)}
+    var expandOutput by remember{mutableStateOf(true)}
+    val focusManager = LocalFocusManager.current
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp).verticalScroll(rememberScrollState())
+    ){
+        Spacer(Modifier.padding(vertical = 10.dp))
+        TextField(
+            value = visible1, onValueChange = {visible1 = it},
+            label = {Text(text = "Visible Text")},
+            modifier = Modifier.fillMaxWidth(),
+            trailingIcon = if(visible1.contains("\n")){ {ExpandIcon(expandVisible1) {expandVisible1 = !expandVisible1}} }else{ null },
+            singleLine = !expandVisible1
+        )
+        Spacer(Modifier.padding(vertical = 2.dp))
+        TextField(
+            value = hidden, onValueChange = {hidden = it},
+            label = {Text(text = "Hidden Text")},
+            modifier = Modifier.fillMaxWidth(),
+            trailingIcon = if(hidden.contains("\n")){ {ExpandIcon(expandHidden) {expandHidden = !expandHidden}} }else{ null },
+            singleLine = !expandHidden
+        )
+        Spacer(Modifier.padding(vertical = 2.dp))
+        TextField(
+            value = visible2, onValueChange = {visible2 = it},
+            label = {Text(text = "Visible Text")},
+            modifier = Modifier.fillMaxWidth(),
+            trailingIcon = if(visible2.contains("\n")){ {ExpandIcon(expandVisible2) {expandVisible2 = !expandVisible2}} }else{ null },
+            singleLine = !expandVisible2
+        )
+        Spacer(Modifier.padding(vertical = 3.dp))
+        Button(
+            onClick = {
+                focusManager.clearFocus()
+                output = encode(visible1, hidden, visible2)
+                expandVisible1 = false
+                expandHidden = false
+                expandVisible2 = false
+            }
+        ){
+            Text(text = " Go! ")
+        }
+        Spacer(Modifier.padding(vertical = 3.dp))
+        AnimatedVisibility(output!=""){
+            Column{
+                OutlinedTextField(
+                    value = output, onValueChange = {output = it},
+                    label = {Text(text = "Output")}, readOnly = true,
+                    trailingIcon = if(output.contains("\n")){ {ExpandIcon(expandOutput) {expandOutput = !expandOutput}} }else{ null },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = !expandOutput
+                )
+                Spacer(Modifier.padding(vertical = 2.dp))
+                var copying by remember{mutableStateOf(false)}
+                val coroutine = rememberCoroutineScope()
+                Button(
+                    onClick = {
+                        copying = true
+                        coroutine.launch{delay(1500); copying = false}
+                        writeClipBoard(output)
+                    },
+                    modifier = Modifier.animateContentSize().align(Alignment.End)
+                ){
+                    Row(verticalAlignment = Alignment.CenterVertically){
+                        Icon(painter = painterResource(Res.drawable.content_copy_fill0), contentDescription = null)
+                        Text(text = if(copying){"  Copied"}else{"  Copy"})
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.padding(top = paddingValues.calculateBottomPadding(), bottom = 60.dp).imePadding())
     }
 }
 
