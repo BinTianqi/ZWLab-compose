@@ -1,5 +1,5 @@
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,13 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import zwlab.composeapp.generated.resources.Res
-import zwlab.composeapp.generated.resources.compose_multiplatform
-import zwlab.composeapp.generated.resources.key_fill0
+import zwlab.composeapp.generated.resources.text_fields_fill0
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -27,8 +27,8 @@ fun App() {
             bottomBar = {
                 NavigationBar{
                     NavigationBarItem(
-                        selected = true, label = {Text(text = "ZWJ")},
-                        onClick = {}, icon = {Icon(painterResource(Res.drawable.key_fill0),contentDescription = null)}
+                        selected = true, label = {Text(text = "Character")},
+                        onClick = {}, icon = {Icon(painterResource(Res.drawable.text_fields_fill0),contentDescription = null)}
                     )
                 }
             }
@@ -38,27 +38,29 @@ fun App() {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun EscapeRegex(paddingValues: PaddingValues){
+    var input by remember{mutableStateOf("")}
+    var output by remember{mutableStateOf("")}
+    var selectedZW by remember{mutableStateOf("b")}
+    var removeMode by remember{mutableStateOf(false)}
+    val removeZW = mutableStateMapOf("b" to true, "c" to true, "d" to true, "e" to true)
+    var expandInput by remember{mutableStateOf(true)}
+    var expandOutput by remember{mutableStateOf(true)}
+    val focusManager = LocalFocusManager.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp).verticalScroll(rememberScrollState())
     ){
-        var input by remember{mutableStateOf("")}
-        var output by remember{mutableStateOf("")}
-        var selectedZW by remember{mutableStateOf("b")}
-        var removeMode by remember{mutableStateOf(false)}
-        val removeZW = mutableStateMapOf("b" to true, "c" to true, "d" to true, "e" to true)
-        Image(
-            painter = painterResource(Res.drawable.compose_multiplatform),contentDescription = null,
-            modifier = Modifier.size(200.dp)
-        )
+        Spacer(Modifier.padding(vertical = 10.dp))
         TextField(
             value = input, onValueChange = {input = it},
             label = {Text(text = "Input")},
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            trailingIcon = if(input.contains("\n")){ {ExpandIcon(expandInput) {expandInput = !expandInput}} }else{ null },
+            singleLine = !expandInput
         )
+        Spacer(Modifier.padding(vertical = 3.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -67,10 +69,12 @@ private fun EscapeRegex(paddingValues: PaddingValues){
                 .clickable(onClick = {removeMode = !removeMode})
         ){
             Checkbox(checked = removeMode, onCheckedChange = {removeMode = it})
-            Spacer(Modifier.padding(horizontal = 2.dp))
-            Text(text = "Remove mode")
-            Spacer(Modifier.padding(horizontal = 3.dp))
+            Text(text = "Remove mode", modifier = Modifier.padding(start = 5.dp, end = 10.dp))
         }
+        Text(
+            text = if(removeMode){"Remove ZW character type:"}else{"Add ZW character type:"},
+            modifier = Modifier.align(Alignment.Start).padding(start = 6.dp, top = 6.dp, bottom = 2.dp).animateContentSize()
+        )
         AnimatedVisibility(!removeMode){
             Column{
                 RadioButtonItem(text = "ZW space", selected = selectedZW=="b", onClick = {selectedZW = "b"})
@@ -81,14 +85,15 @@ private fun EscapeRegex(paddingValues: PaddingValues){
         }
         AnimatedVisibility(removeMode){
             Column{
-                CheckBoxItem(text = "Remove ZW space", checked = removeZW["b"]==true, onClick = {removeZW["b"]=it})
-                CheckBoxItem(text = "Remove ZW non-joiner", checked = removeZW["c"]==true, onClick = {removeZW["c"]=it})
-                CheckBoxItem(text = "Remove ZW joiner", checked = removeZW["d"]==true, onClick = {removeZW["d"]=it})
-                CheckBoxItem(text = "Remove LTR mark", checked = removeZW["e"]==true, onClick = {removeZW["e"]=it})
+                CheckBoxItem(text = "ZW space", checked = removeZW["b"]==true, onClick = {removeZW["b"]=it})
+                CheckBoxItem(text = "ZW non-joiner", checked = removeZW["c"]==true, onClick = {removeZW["c"]=it})
+                CheckBoxItem(text = "ZW joiner", checked = removeZW["d"]==true, onClick = {removeZW["d"]=it})
+                CheckBoxItem(text = "LTR mark", checked = removeZW["e"]==true, onClick = {removeZW["e"]=it})
             }
         }
         Button(
             onClick = {
+                focusManager.clearFocus()
                 output = if(removeMode){
                     val charSet = mutableSetOf<String>()
                     if(removeZW["b"]==true){charSet.add("\u200B")}
@@ -99,18 +104,21 @@ private fun EscapeRegex(paddingValues: PaddingValues){
                 }else{
                     addZW(input,selectedZW)
                 }
+                expandInput = false
             }
         ){
             Text(text = " Go! ")
         }
+        Spacer(Modifier.padding(vertical = 3.dp))
         AnimatedVisibility(output!=""){
-            TextField(
+            OutlinedTextField(
                 value = output, onValueChange = {output = it},
-                label = {Text(text = "Output")},
+                label = {Text(text = "Output")}, readOnly = true,
+                trailingIcon = if(output.contains("\n")){ {ExpandIcon(expandOutput) {expandOutput = !expandOutput}} }else{ null },
                 modifier = Modifier.fillMaxWidth(),
-                readOnly = true
+                singleLine = !expandOutput
             )
         }
-        Spacer(Modifier.padding(top = paddingValues.calculateBottomPadding(), bottom = 60.dp))
+        Spacer(Modifier.padding(top = paddingValues.calculateBottomPadding(), bottom = 60.dp).imePadding())
     }
 }
