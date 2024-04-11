@@ -16,25 +16,52 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import zwlab.composeapp.generated.resources.Res
+import zwlab.composeapp.generated.resources.glyphs_fill0
 import zwlab.composeapp.generated.resources.text_fields_fill0
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 @Preview
 fun App() {
+    var page by remember{mutableStateOf("EscapeRegex")}
     MaterialTheme {
         Scaffold(
             bottomBar = {
                 NavigationBar{
                     NavigationBarItem(
-                        selected = true, label = {Text(text = "Character")},
-                        onClick = {}, icon = {Icon(painterResource(Res.drawable.text_fields_fill0),contentDescription = null)}
+                        selected = page == "EscapeRegex", label = {Text(text = "Character")},
+                        onClick = {page = "EscapeRegex"},
+                        icon = {Icon(painterResource(Res.drawable.text_fields_fill0),contentDescription = null)}
+                    )
+                    NavigationBarItem(
+                        selected = page == "ZWList", label = {Text(text = "ZW list")},
+                        onClick = {page = "ZWList"},
+                        icon = {Icon(painterResource(Res.drawable.glyphs_fill0),contentDescription = null)}
                     )
                 }
             }
         ){paddingValues->
-            EscapeRegex(paddingValues)
+            if(page=="EscapeRegex"){
+                EscapeRegex(paddingValues)
+            }
+            if(page=="ZWList"){
+                ZWList()
+            }
         }
+    }
+}
+
+@Composable
+fun ZWList(){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ){
+        Spacer(Modifier.padding(vertical = 10.dp))
+        CopyZWCharacter("\u200B" ,"ZW space")
+        CopyZWCharacter("\u200C" ,"ZW non-joiner")
+        CopyZWCharacter("\u200D" ,"ZW joiner")
+        CopyZWCharacter("\u200E" ,"LTR mark")
     }
 }
 
