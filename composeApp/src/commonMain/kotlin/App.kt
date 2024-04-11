@@ -49,6 +49,7 @@ private fun EscapeRegex(paddingValues: PaddingValues){
         var output by remember{mutableStateOf("")}
         var selectedZW by remember{mutableStateOf("b")}
         var removeMode by remember{mutableStateOf(false)}
+        val removeZW = mutableStateMapOf("b" to true, "c" to true, "d" to true, "e" to true)
         Image(
             painter = painterResource(Res.drawable.compose_multiplatform),contentDescription = null,
             modifier = Modifier.size(200.dp)
@@ -72,16 +73,32 @@ private fun EscapeRegex(paddingValues: PaddingValues){
         }
         AnimatedVisibility(!removeMode){
             Column{
-                RadioButtonItem(text = "Zero-width space", selected = selectedZW=="b", onClick = {selectedZW = "b"})
-                RadioButtonItem(text = "Zero-width non-joiner", selected = selectedZW=="c", onClick = {selectedZW = "c"})
-                RadioButtonItem(text = "Zero-width joiner", selected = selectedZW=="d", onClick = {selectedZW = "d"})
-                RadioButtonItem(text = "Left-to-right mark", selected = selectedZW=="e", onClick = {selectedZW = "e"})
+                RadioButtonItem(text = "ZW space", selected = selectedZW=="b", onClick = {selectedZW = "b"})
+                RadioButtonItem(text = "ZW non-joiner", selected = selectedZW=="c", onClick = {selectedZW = "c"})
+                RadioButtonItem(text = "ZW joiner", selected = selectedZW=="d", onClick = {selectedZW = "d"})
+                RadioButtonItem(text = "LTR mark", selected = selectedZW=="e", onClick = {selectedZW = "e"})
+            }
+        }
+        AnimatedVisibility(removeMode){
+            Column{
+                CheckBoxItem(text = "Remove ZW space", checked = removeZW["b"]==true, onClick = {removeZW["b"]=it})
+                CheckBoxItem(text = "Remove ZW non-joiner", checked = removeZW["c"]==true, onClick = {removeZW["c"]=it})
+                CheckBoxItem(text = "Remove ZW joiner", checked = removeZW["d"]==true, onClick = {removeZW["d"]=it})
+                CheckBoxItem(text = "Remove LTR mark", checked = removeZW["e"]==true, onClick = {removeZW["e"]=it})
             }
         }
         Button(
             onClick = {
-                output = if(removeMode){ removeZW(input) }
-                else{ addZW(input,selectedZW) }
+                output = if(removeMode){
+                    val charSet = mutableSetOf<String>()
+                    if(removeZW["b"]==true){charSet.add("\u200B")}
+                    if(removeZW["c"]==true){charSet.add("\u200C")}
+                    if(removeZW["d"]==true){charSet.add("\u200D")}
+                    if(removeZW["e"]==true){charSet.add("\u200E")}
+                    removeZW(input, charSet)
+                }else{
+                    addZW(input,selectedZW)
+                }
             }
         ){
             Text(text = " Go! ")

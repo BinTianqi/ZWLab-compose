@@ -24,3 +24,20 @@ fun RadioButtonItem(text:String, selected:Boolean, onClick:()->Unit){
         Text(text = text)
     }
 }
+
+@Composable
+fun CheckBoxItem(text:String, checked:Boolean, onClick:(Boolean)->Unit){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(25))
+            .clickable(onClick = {onClick(!checked)})
+    ){
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onClick
+        )
+        Text(text = text)
+    }
+}
