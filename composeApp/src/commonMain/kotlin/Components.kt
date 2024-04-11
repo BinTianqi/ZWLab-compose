@@ -84,7 +84,7 @@ fun CopyZWCharacter(char:String, desc:String){
             .padding(vertical = 5.dp)
             .clip(RoundedCornerShape(25))
             .background(colorScheme.primaryContainer)
-            .width(250.dp)
+            .width(300.dp)
             .padding(10.dp)
     ){
         Text(
