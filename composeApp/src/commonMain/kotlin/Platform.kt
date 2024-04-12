@@ -1,7 +1,4 @@
-interface Platform {
-    val name: String
-}
 
-expect fun getPlatform(): Platform
+expect fun getPlatform():String
 
 expect fun writeClipBoard(content:String)

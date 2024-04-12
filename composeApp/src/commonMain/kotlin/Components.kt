@@ -1,4 +1,5 @@
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -84,23 +85,22 @@ fun CopyZWCharacter(char:String, desc:String){
             .padding(vertical = 5.dp)
             .clip(RoundedCornerShape(25))
             .background(colorScheme.primaryContainer)
-            .width(300.dp)
+            .width(270.dp)
             .padding(10.dp)
     ){
         Text(
             text = desc,
             color = colorScheme.onPrimaryContainer,
             style = typography.titleLarge,
-            modifier = Modifier.padding(start = 10.dp, end = 15.dp)
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp)
         )
-        FloatingActionButton(
+        IconButton(
             onClick = {
                 copying = true
                 coroutine.launch{ delay(1500); copying=false }
                 writeClipBoard(char)
             },
-            elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
-            containerColor = colorScheme.primary, contentColor = colorScheme.onPrimary
+            colors = IconButtonDefaults.iconButtonColors(contentColor = colorScheme.primary)
         ){
             Icon(
                 painter = painterResource(Res.drawable.content_copy_fill0),
@@ -111,6 +111,45 @@ fun CopyZWCharacter(char:String, desc:String){
                 painter = painterResource(Res.drawable.check_fill0),
                 contentDescription = null,
                 modifier = Modifier.alpha(alpha)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun CopyButton(text:String, content:String){
+    var copying by remember{mutableStateOf(false)}
+    val coroutine = rememberCoroutineScope()
+    val alpha: Float by animateFloatAsState(targetValue = if (copying) 1f else 0f, animationSpec = animateAlpha)
+    Button(
+        onClick = {
+            copying = true
+            coroutine.launch{delay(1500); copying = false}
+            writeClipBoard(content)
+        },
+        modifier = Modifier.animateContentSize()
+    ){
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier.widthIn(min = 120.dp)
+        ){
+            Box{
+                Icon(
+                    painter = painterResource(Res.drawable.content_copy_fill0),
+                    contentDescription = null,
+                    modifier = Modifier.alpha(1F - alpha)
+                )
+                Icon(
+                    painter = painterResource(Res.drawable.check_fill0),
+                    contentDescription = null,
+                    modifier = Modifier.alpha(alpha)
+                )
+            }
+            Text(
+                text = if(copying){"Copied"}else{text},
+                modifier = Modifier.animateContentSize().padding(start = 5.dp)
             )
         }
     }
