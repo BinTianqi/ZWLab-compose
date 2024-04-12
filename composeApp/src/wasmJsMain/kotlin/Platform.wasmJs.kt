@@ -1,3 +1,4 @@
+import androidx.compose.material3.ColorScheme
 
 actual fun getPlatform() = "web"
 
@@ -16,3 +17,5 @@ actual fun writeClipBoard(content: String) {
         )
     """)
 }
+
+actual fun getDynamicTheme(): Pair<ColorScheme, ColorScheme>? = null

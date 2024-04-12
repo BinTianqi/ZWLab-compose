@@ -1,3 +1,4 @@
+import androidx.compose.material3.ColorScheme
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 
@@ -12,3 +13,5 @@ actual fun writeClipBoard(content: String) {
         println(e)
     }
 }
+
+actual fun getDynamicTheme():Pair<ColorScheme, ColorScheme>? = null

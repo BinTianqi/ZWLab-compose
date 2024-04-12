@@ -12,60 +12,22 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import zwlab.composeapp.generated.resources.*
+import ui.getTheme
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-@Preview
-fun App() {
-    var page by remember{mutableStateOf("ZWList")}
-    MaterialTheme {
+fun App(dark: Boolean, changeTheme: (Boolean) -> Unit) {
+    var page by remember{mutableStateOf("Home")}
+    MaterialTheme(
+        colorScheme = getTheme(dark)
+    ){
         Scaffold(
-            bottomBar = {
-                NavigationBar{
-                    NavigationBarItem(
-                        selected = page == "Insert", label = {Text(text = "Insert")},
-                        onClick = {page = "Insert"},
-                        icon = {Icon(painterResource(Res.drawable.add_fill0),contentDescription = null)}
-                    )
-                    NavigationBarItem(
-                        selected = page == "Remove", label = {Text(text = "Remove")},
-                        onClick = {page = "Remove"},
-                        icon = {Icon(painterResource(Res.drawable.remove_fill0),contentDescription = null)}
-                    )
-                    NavigationBarItem(
-                        selected = page == "ZWList", label = {Text(text = "ZW list")},
-                        onClick = {page = "ZWList"},
-                        icon = {Icon(painterResource(Res.drawable.format_list_bulleted_fill0),contentDescription = null)}
-                    )
-                    NavigationBarItem(
-                        selected = page == "Encode", label = {Text(text = "Encode")},
-                        onClick = {page = "Encode"},
-                        icon = {Icon(painterResource(Res.drawable.lock_fill0),contentDescription = null)}
-                    )
-                    NavigationBarItem(
-                        selected = page == "Decode", label = {Text(text = "Decode")},
-                        onClick = {page = "Decode"},
-                        icon = {Icon(painterResource(Res.drawable.lock_open_right_fill0),contentDescription = null)}
-                    )
-                }
-            }
+            bottomBar = { NavBar(page){page=it} }
         ){paddingValues->
-            if(page=="Insert"){
-                InsertZW(paddingValues)
-            }
-            if(page=="Remove"){
-                RemoveZW(paddingValues)
-            }
-            if(page=="ZWList"){
-                ZWList(paddingValues)
-            }
-            if(page=="Encode"){
-                EncodeZW(paddingValues)
-            }
-            if(page=="Decode"){
-                DecodeZW(paddingValues)
-            }
+            if(page=="Insert"){ InsertZW(paddingValues) }
+            if(page=="Remove"){ RemoveZW(paddingValues) }
+            if(page=="Home"){ ZWList(paddingValues, dark, changeTheme) }
+            if(page=="Encode"){ EncodeZW(paddingValues) }
+            if(page=="Decode"){ DecodeZW(paddingValues) }
         }
     }
 }
@@ -206,7 +168,7 @@ fun EncodeZW(paddingValues: PaddingValues){
 }
 
 @Composable
-fun ZWList(paddingValues: PaddingValues){
+fun ZWList(paddingValues: PaddingValues, dark:Boolean, changeTheme:(Boolean)->Unit){
     val list = listOf(
         Pair("\u200B" ,"ZW space"),
         Pair("\uFEFF" ,"ZW no-break space"),
@@ -219,10 +181,20 @@ fun ZWList(paddingValues: PaddingValues){
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
     ){
-        Text(
-            text = "Zero width Lab", style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(top = 15.dp, bottom = 10.dp)
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Text(
+                text = "Zero width Lab", style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(top = 15.dp, bottom = 10.dp)
+            )
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 3.dp)){
+                Text(text = "Dark", modifier = Modifier.padding(end = 5.dp))
+                Switch(onCheckedChange = changeTheme, checked = dark)
+            }
+        }
         if(getPlatform()=="android"){
             for(i in list){
                 CopyZWCharacter(i.first, i.second)
@@ -246,7 +218,7 @@ fun ZWList(paddingValues: PaddingValues){
 }
 
 @Composable
-private fun InsertZW(paddingValues: PaddingValues){
+fun InsertZW(paddingValues: PaddingValues){
     var input by remember{mutableStateOf("")}
     var output by remember{mutableStateOf("")}
     var selectedZW by remember{mutableStateOf("b")}
