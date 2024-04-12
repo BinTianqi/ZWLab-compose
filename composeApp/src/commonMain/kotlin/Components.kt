@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -118,7 +119,7 @@ fun CopyZWCharacter(char:String, desc:String){
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun CopyButton(text:String, content:String){
+fun CopyButton(text:String, content:String, minWidth:Dp=Dp.Unspecified){
     var copying by remember{mutableStateOf(false)}
     val coroutine = rememberCoroutineScope()
     val alpha: Float by animateFloatAsState(targetValue = if (copying) 1f else 0f, animationSpec = animateAlpha)
@@ -128,12 +129,12 @@ fun CopyButton(text:String, content:String){
             coroutine.launch{delay(1500); copying = false}
             writeClipBoard(content)
         },
-        modifier = Modifier.animateContentSize()
+        modifier = Modifier.widthIn(min = minWidth)
     ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.widthIn(min = 120.dp)
+            modifier = Modifier.animateContentSize()
         ){
             Box{
                 Icon(

@@ -12,10 +12,14 @@ fun addZW(input:String, type:String):Pair<String,Int>{
     return Pair(builder.toString(),count)
 }
 
-fun removeZW(input: String, charSet:Set<String>):String{
-    var output = input
-    for(zw in charSet){ output = output.replace(zw,"") }
-    return output
+fun removeZW(input: String):Pair<String,Int>{
+    var output = ""
+    var stat =0
+    input.forEach{
+        if(it in zwDict){ stat++ }
+        else{ output+=it }
+    }
+    return Pair(output,stat)
 }
 
 fun encode(visible1:String, hidden:String, visible2:String, method:String="bin"):String{
@@ -39,7 +43,7 @@ fun decode(content:String, method:String="bin"):Pair<String,String>{
         "bin"->{
             var bin = ""
             content.forEach{
-                if(it.toString() in zwDict){
+                if(it in zwDict){
                     if(it.toString()=="\u200C"){bin += "0"}
                     if(it.toString()=="\u200B"){bin += "1"}
                     if(it.toString()=="\u200D"){ hidden+=bin.toInt(2).toChar(); bin="" }
@@ -52,4 +56,4 @@ fun decode(content:String, method:String="bin"):Pair<String,String>{
     return Pair(visible,hidden)
 }
 
-val zwDict = setOf("\u200B", "\u200C", "\u200D", "\u200E", "\u200F", "\uFEFF")
+val zwDict = setOf('\u200B', '\u200C', '\u200D', '\u200E', '\u200F', '\uFEFF')

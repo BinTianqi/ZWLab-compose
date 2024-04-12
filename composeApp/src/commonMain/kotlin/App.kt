@@ -5,7 +5,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -56,8 +55,7 @@ fun App() {
                 InsertZW(paddingValues)
             }
             if(page=="Remove"){
-                val removeZW = mutableStateMapOf("b" to true, "c" to true, "d" to true, "e" to true, "f" to true, "feff" to true)
-                RemoveZW(paddingValues, removeZW)
+                RemoveZW(paddingValues)
             }
             if(page=="ZWList"){
                 ZWList(paddingValues)
@@ -129,8 +127,8 @@ fun DecodeZW(paddingValues: PaddingValues){
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier.fillMaxWidth()
                 ){
-                    CopyButton("Copy visible", visible)
-                    CopyButton("Copy hidden", hidden)
+                    CopyButton("Copy visible", visible, 160.dp)
+                    CopyButton("Copy hidden", hidden, 160.dp)
                 }
             }
         }
@@ -316,11 +314,12 @@ private fun InsertZW(paddingValues: PaddingValues){
 }
 
 @Composable
-fun RemoveZW(paddingValues: PaddingValues, removeZW:SnapshotStateMap<String,Boolean>){
+fun RemoveZW(paddingValues: PaddingValues){
     var input by remember{mutableStateOf("")}
     var output by remember{mutableStateOf("")}
     var expandInput by remember{mutableStateOf(true)}
     var expandOutput by remember{mutableStateOf(true)}
+    var stat by remember{mutableStateOf(0)}
     val focusManager = LocalFocusManager.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -335,27 +334,13 @@ fun RemoveZW(paddingValues: PaddingValues, removeZW:SnapshotStateMap<String,Bool
             singleLine = !expandInput
         )
         Spacer(Modifier.padding(vertical = 3.dp))
-        Text(
-            text = "Remove ZW character type:",
-            modifier = Modifier.align(Alignment.Start).padding(start = 6.dp, top = 6.dp, bottom = 2.dp).animateContentSize()
-        )
-        CheckBoxItem(text = "ZW space", checked = removeZW["b"]==true, onClick = {removeZW["b"]=it})
-        CheckBoxItem(text = "ZW no-break space", checked = removeZW["feff"]==true, onClick = {removeZW["feff"]=it})
-        CheckBoxItem(text = "ZW non-joiner", checked = removeZW["c"]==true, onClick = {removeZW["c"]=it})
-        CheckBoxItem(text = "ZW joiner", checked = removeZW["d"]==true, onClick = {removeZW["d"]=it})
-        CheckBoxItem(text = "LTR mark", checked = removeZW["e"]==true, onClick = {removeZW["e"]=it})
-        CheckBoxItem(text = "RTL mark", checked = removeZW["f"]==true, onClick = {removeZW["f"]=it})
         Button(
             onClick = {
                 focusManager.clearFocus()
-                val charSet = mutableSetOf<String>()
-                if(removeZW["b"]==true){charSet.add("\u200B")}
-                if(removeZW["c"]==true){charSet.add("\u200C")}
-                if(removeZW["d"]==true){charSet.add("\u200D")}
-                if(removeZW["e"]==true){charSet.add("\u200E")}
-                if(removeZW["f"]==true){charSet.add("\u200F")}
-                if(removeZW["feff"]==true){charSet.add("\uFEFF")}
-                output = removeZW(input, charSet)
+                removeZW(input).let{
+                    output = it.first
+                    stat = it.second
+                }
                 expandInput = false
             }
         ){
@@ -372,7 +357,13 @@ fun RemoveZW(paddingValues: PaddingValues, removeZW:SnapshotStateMap<String,Bool
                     singleLine = !expandOutput
                 )
                 Spacer(Modifier.padding(vertical = 2.dp))
-                CopyButton("Copy", output)
+                Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()){
+                    Text(
+                        text = "Removed $stat ZW chars.",
+                        modifier = Modifier.padding(start = 5.dp)
+                    )
+                    CopyButton("Copy", output)
+                }
             }
         }
         Spacer(Modifier.padding(top = paddingValues.calculateBottomPadding(), bottom = 60.dp).imePadding())
