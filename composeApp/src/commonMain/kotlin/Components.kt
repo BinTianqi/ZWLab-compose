@@ -20,9 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.*
 import zwlab.composeapp.generated.resources.*
 
 @Composable
@@ -47,7 +45,8 @@ fun RadioButtonItem(text:String, selected:Boolean, onClick:()->Unit){
 fun ExpandIcon(expanded:Boolean, onClick:()->Unit){
     val degrees: Float by animateFloatAsState(if (expanded) 180f else 0f)
     Icon(
-        painter = painterResource(Res.drawable.expand_more_fill0), contentDescription = "expand textfield",
+        painter = painterResource(Res.drawable.expand_more_fill0),
+        contentDescription = stringResource(if(expanded){Res.string.shrink_textfield}else{Res.string.expand_textfield}),
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .clickable(onClick = onClick)
@@ -88,12 +87,12 @@ fun CopyZWCharacter(char:String, desc:String){
         ){
             Icon(
                 painter = painterResource(Res.drawable.content_copy_fill0),
-                contentDescription = null,
+                contentDescription = stringResource(Res.string.copy),
                 modifier = Modifier.alpha(1F - alpha)
             )
             Icon(
                 painter = painterResource(Res.drawable.check_fill0),
-                contentDescription = null,
+                contentDescription = stringResource(Res.string.copied),
                 modifier = Modifier.alpha(alpha)
             )
         }
@@ -122,17 +121,17 @@ fun CopyButton(text:String, content:String, minWidth:Dp=Dp.Unspecified){
             Box{
                 Icon(
                     painter = painterResource(Res.drawable.content_copy_fill0),
-                    contentDescription = null,
+                    contentDescription = stringResource(Res.string.copy),
                     modifier = Modifier.alpha(1F - alpha)
                 )
                 Icon(
                     painter = painterResource(Res.drawable.check_fill0),
-                    contentDescription = null,
+                    contentDescription = stringResource(Res.string.copied),
                     modifier = Modifier.alpha(alpha)
                 )
             }
             Text(
-                text = if(copying){"Copied"}else{text},
+                text = if(copying){stringResource(Res.string.copied)}else{text},
                 modifier = Modifier.animateContentSize().padding(start = 5.dp)
             )
         }
@@ -145,7 +144,7 @@ fun NavBar(page:String, setPage:(String)->Unit){
     NavigationBar{
         for(item in pageList){
             NavigationBarItem(
-                selected = page==item.id, label = {Text(text = item.name)},
+                selected = page==item.id, label = {Text(text = stringResource(item.name))},
                 onClick = {setPage(item.id)},
                 icon = {Icon(painterResource(item.icon),contentDescription = null)}
             )
@@ -159,16 +158,17 @@ fun AboutDialog(showDialog:Boolean, onDismiss:()->Unit){
     if(showDialog){
         var copying by remember{mutableStateOf(false)}
         val coroutine = rememberCoroutineScope()
+        val url = stringResource(Res.string.project_on_github_url)
         AlertDialog(
             onDismissRequest = onDismiss,
             icon = {Icon(painterResource(Res.drawable.info_fill0), contentDescription = "App icon")},
-            title = {Text(text = "ZW Lab")},
+            title = {Text(text = stringResource(Res.string.zero_width_lab))},
             text = {
                 Column{
-                    Text(text = "Author: BinTianqi")
-                    Text(text = "Source code available on Github")
+                    Text(text = stringResource(Res.string.author_info))
+                    Text(text = stringResource(Res.string.project_on_github))
                     SelectionContainer{
-                        Text(text = "github.com/BinTianqi/ZWLab", color = colorScheme.onPrimaryContainer)
+                        Text(text = url, color = colorScheme.onPrimaryContainer)
                     }
                 }
             },
@@ -177,14 +177,17 @@ fun AboutDialog(showDialog:Boolean, onDismiss:()->Unit){
                     onClick = {
                         copying = true
                         coroutine.launch{ delay(1500); copying = false}
-                        writeClipBoard("github.com/BinTianqi/ZWLab")
+                        writeClipBoard(url)
                     },
                     modifier = Modifier.width(100.dp)
                 ){
-                    Text(text = if(copying){"Copied"}else{"Copy link"}, modifier = Modifier.animateContentSize())
+                    Text(
+                        text = stringResource(if(copying){Res.string.copied}else{Res.string.copy_link}),
+                        modifier = Modifier.animateContentSize()
+                    )
                 }
             },
-            confirmButton = {TextButton(onClick = onDismiss){Text(text = "OK")} },
+            confirmButton = {TextButton(onClick = onDismiss){Text(text = stringResource(Res.string.confirm))} },
             properties = DialogProperties(dismissOnClickOutside = false)
         )
     }
@@ -192,15 +195,15 @@ fun AboutDialog(showDialog:Boolean, onDismiss:()->Unit){
 
 data class PageListItem @OptIn(ExperimentalResourceApi::class) constructor(
     val id: String,
-    val name: String,
+    val name: StringResource,
     val icon: DrawableResource
 )
 
 @OptIn(ExperimentalResourceApi::class)
 val pageList = listOf(
-    PageListItem("Insert","Insert",Res.drawable.add_fill0),
-    PageListItem("Remove","Remove",Res.drawable.remove_fill0),
-    PageListItem("Home","Home",Res.drawable.format_list_bulleted_fill0),
-    PageListItem("Encode","Encode",Res.drawable.lock_fill0),
-    PageListItem("Decode","Decode",Res.drawable.lock_open_right_fill0)
+    PageListItem("Insert",Res.string.insert,Res.drawable.add_fill0),
+    PageListItem("Remove",Res.string.remove,Res.drawable.remove_fill0),
+    PageListItem("Home",Res.string.home,Res.drawable.format_list_bulleted_fill0),
+    PageListItem("Encode",Res.string.encode,Res.drawable.lock_fill0),
+    PageListItem("Decode",Res.string.decode,Res.drawable.lock_open_right_fill0)
 )

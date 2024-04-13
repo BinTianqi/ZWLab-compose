@@ -9,15 +9,19 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import ui.getTheme
 import zwlab.composeapp.generated.resources.Res
+import zwlab.composeapp.generated.resources.about
 import zwlab.composeapp.generated.resources.info_fill0
+import zwlab.composeapp.generated.resources.zw_lab
 
+@OptIn(ExperimentalResourceApi::class)
 fun main() = application {
     var dark:Boolean by remember{mutableStateOf(false)}
     dark = isSystemInDarkTheme()
     Window(
-        onCloseRequest = ::exitApplication, title = "Zero width Lab"
+        onCloseRequest = ::exitApplication, title = stringResource(Res.string.zw_lab)
     ) {
         DesktopApp(dark){dark=it}
     }
@@ -41,16 +45,16 @@ fun DesktopApp(dark:Boolean, changeTheme:(Boolean)->Unit){
                     Column{
                         for(item in list){
                             NavigationRailItem(
-                                icon = {Icon(painter = painterResource(item.icon), contentDescription = item.name)},
-                                label = {Text(text = item.name)},
+                                icon = {Icon(painter = painterResource(item.icon), contentDescription = stringResource(item.name))},
+                                label = {Text(text = stringResource(item.name))},
                                 selected = page==item.id,
                                 onClick = {page=item.id}
                             )
                         }
                     }
                     NavigationRailItem(
-                        icon = {Icon(painter = painterResource(Res.drawable.info_fill0), contentDescription = "About")},
-                        label = {Text(text = "About")},
+                        icon = {Icon(painter = painterResource(Res.drawable.info_fill0), contentDescription = stringResource(Res.string.about))},
+                        label = {Text(text = stringResource(Res.string.about))},
                         selected = false,
                         onClick = {showAboutDialog =  true}
                     )

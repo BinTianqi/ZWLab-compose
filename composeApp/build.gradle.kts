@@ -90,6 +90,9 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }
+    androidResources{
+        generateLocaleConfig = true
+    }
 }
 
 compose.desktop {

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="zero_width_lab">Zero width Lab</string>
+    <string name="zw_lab">ZW Lab</string>
+
+    <string name="copy">复制</string>
+    <string name="copied">复制成功</string>
+    <string name="input">输入</string>
+    <string name="output">输出</string>
+    <string name="visible_text">可见文本</string>
+    <string name="hidden_text">隐藏文本</string>
+    <string name="go"> Go! </string>
+    <string name="expand_textfield">展开文本框</string>
+    <string name="shrink_textfield">折叠文本框</string>
+
+    <string name="home">主页</string>
+    <string name="dark">深色</string>
+    <string name="zw_space">零宽空格</string>
+    <string name="zw_no_break_space">零宽非断空格</string>
+    <string name="zw_non_joiner">零宽断字符</string>
+    <string name="zw_joiner">零宽连字符</string>
+    <string name="ltr_mark">左至右符</string>
+    <string name="rtl_mark">右至左符</string>
+
+    <string name="about">关于</string>
+    <string name="author_info">作者: Bin Tianqi</string>
+    <string name="project_on_github">源代码托管在Github上. </string>
+    <string name="project_on_github_url">github.com/BinTianqi/ZWLab</string>
+    <string name="copy_link">复制链接</string>
+    <string name="confirm">确定</string>
+
+    <string name="insert">插入</string>
+    <string name="zw_char_type_is">零宽字符类型： </string>
+    <string name="insert_stat">添加了 %1$s 个零宽字符 </string>
+
+    <string name="remove">移除</string>
+    <string name="remove_stat">移除了 %1$s 个零宽字符 </string>
+
+    <string name="encode">编码</string>
+
+    <string name="decode">解码</string>
+    <string name="copy_visible">复制可见文本</string>
+    <string name="copy_hidden">复制隐藏文本</string>
+</resources>

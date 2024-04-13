@@ -9,7 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 import ui.getTheme
+import zwlab.composeapp.generated.resources.*
 
 @Composable
 fun App(dark: Boolean, changeTheme: (Boolean) -> Unit) {
@@ -31,6 +34,7 @@ fun App(dark: Boolean, changeTheme: (Boolean) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DecodeZW(paddingValues: PaddingValues){
     var visible by remember{mutableStateOf("")}
@@ -47,7 +51,7 @@ fun DecodeZW(paddingValues: PaddingValues){
         Spacer(Modifier.padding(vertical = 10.dp))
         TextField(
             value = input, onValueChange = {input = it},
-            label = {Text(text = "Input")},
+            label = {Text(text = stringResource(Res.string.input))},
             trailingIcon = if(input.contains("\n")){ {ExpandIcon(expandInput) {expandInput = !expandInput}} }else{ null },
             modifier = Modifier.fillMaxWidth(),
             singleLine = !expandInput
@@ -63,14 +67,14 @@ fun DecodeZW(paddingValues: PaddingValues){
                 expandInput = false
             }
         ){
-            Text(text = " Go! ")
+            Text(text = stringResource(Res.string.go))
         }
         Spacer(Modifier.padding(vertical = 3.dp))
         AnimatedVisibility(visible!=""||hidden!=""){
             Column{
                 TextField(
                     value = visible, onValueChange = {visible = it},
-                    label = {Text(text = "Visible Text")},
+                    label = {Text(text = stringResource(Res.string.visible_text))},
                     modifier = Modifier.fillMaxWidth(),
                     trailingIcon = if(visible.contains("\n")){ {ExpandIcon(expandVisible) {expandVisible = !expandVisible}} }else{ null },
                     singleLine = !expandVisible
@@ -78,7 +82,7 @@ fun DecodeZW(paddingValues: PaddingValues){
                 Spacer(Modifier.padding(vertical = 2.dp))
                 TextField(
                     value = hidden, onValueChange = {hidden = it},
-                    label = {Text(text = "Hidden Text")},
+                    label = {Text(text = stringResource(Res.string.hidden_text))},
                     modifier = Modifier.fillMaxWidth(),
                     trailingIcon = if(hidden.contains("\n")){ {ExpandIcon(expandHidden) {expandHidden = !expandHidden}} }else{ null },
                     singleLine = !expandHidden
@@ -88,8 +92,8 @@ fun DecodeZW(paddingValues: PaddingValues){
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier.fillMaxWidth()
                 ){
-                    CopyButton("Copy visible", visible, 160.dp)
-                    CopyButton("Copy hidden", hidden, 160.dp)
+                    CopyButton(stringResource(Res.string.copy_visible), visible, 160.dp)
+                    CopyButton(stringResource(Res.string.copy_hidden), hidden, 160.dp)
                 }
             }
         }
@@ -97,6 +101,7 @@ fun DecodeZW(paddingValues: PaddingValues){
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun EncodeZW(paddingValues: PaddingValues){
     var visible1 by remember{mutableStateOf("")}
@@ -115,7 +120,7 @@ fun EncodeZW(paddingValues: PaddingValues){
         Spacer(Modifier.padding(vertical = 10.dp))
         TextField(
             value = visible1, onValueChange = {visible1 = it},
-            label = {Text(text = "Visible Text")},
+            label = {Text(text = stringResource(Res.string.visible_text))},
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = if(visible1.contains("\n")){ {ExpandIcon(expandVisible1) {expandVisible1 = !expandVisible1}} }else{ null },
             singleLine = !expandVisible1
@@ -123,7 +128,7 @@ fun EncodeZW(paddingValues: PaddingValues){
         Spacer(Modifier.padding(vertical = 2.dp))
         TextField(
             value = hidden, onValueChange = {hidden = it},
-            label = {Text(text = "Hidden Text")},
+            label = {Text(text = stringResource(Res.string.hidden_text))},
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = if(hidden.contains("\n")){ {ExpandIcon(expandHidden) {expandHidden = !expandHidden}} }else{ null },
             singleLine = !expandHidden
@@ -131,7 +136,7 @@ fun EncodeZW(paddingValues: PaddingValues){
         Spacer(Modifier.padding(vertical = 2.dp))
         TextField(
             value = visible2, onValueChange = {visible2 = it},
-            label = {Text(text = "Visible Text")},
+            label = {Text(text = stringResource(Res.string.visible_text))},
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = if(visible2.contains("\n")){ {ExpandIcon(expandVisible2) {expandVisible2 = !expandVisible2}} }else{ null },
             singleLine = !expandVisible2
@@ -146,35 +151,36 @@ fun EncodeZW(paddingValues: PaddingValues){
                 expandVisible2 = false
             }
         ){
-            Text(text = " Go! ")
+            Text(text = stringResource(Res.string.go))
         }
         Spacer(Modifier.padding(vertical = 3.dp))
         AnimatedVisibility(output!=""){
             Column{
                 OutlinedTextField(
                     value = output, onValueChange = {output = it},
-                    label = {Text(text = "Output")}, readOnly = true,
+                    label = {Text(text = stringResource(Res.string.output))}, readOnly = true,
                     trailingIcon = if(output.contains("\n")){ {ExpandIcon(expandOutput) {expandOutput = !expandOutput}} }else{ null },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = !expandOutput
                 )
                 Spacer(Modifier.padding(vertical = 2.dp))
-                CopyButton("Copy", output)
+                CopyButton(stringResource(Res.string.copy), output)
             }
         }
         Spacer(Modifier.padding(top = paddingValues.calculateBottomPadding(), bottom = 60.dp).imePadding())
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ZWList(paddingValues: PaddingValues, dark:Boolean, changeTheme:(Boolean)->Unit, showDialog:()->Unit){
     val list = listOf(
-        Pair("\u200B" ,"ZW space"),
-        Pair("\uFEFF" ,"ZW no-break space"),
-        Pair("\u200C" ,"ZW non-joiner"),
-        Pair("\u200D" ,"ZW joiner"),
-        Pair("\u200E" ,"LTR mark"),
-        Pair("\u200F" ,"RTL mark")
+        Pair("\u200B" ,stringResource(Res.string.zw_space)),
+        Pair("\uFEFF" ,stringResource(Res.string.zw_no_break_space)),
+        Pair("\u200C" ,stringResource(Res.string.zw_non_joiner)),
+        Pair("\u200D" ,stringResource(Res.string.zw_joiner)),
+        Pair("\u200E" ,stringResource(Res.string.ltr_mark)),
+        Pair("\u200F" ,stringResource(Res.string.rtl_mark))
     )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -186,11 +192,11 @@ fun ZWList(paddingValues: PaddingValues, dark:Boolean, changeTheme:(Boolean)->Un
             modifier = Modifier.fillMaxWidth()
         ){
             Text(
-                text = "Zero width Lab", style = MaterialTheme.typography.headlineLarge,
+                text = stringResource(Res.string.zero_width_lab), style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.padding(top = 15.dp, bottom = 10.dp)
             )
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 3.dp)){
-                Text(text = "Dark", modifier = Modifier.padding(end = 5.dp))
+                Text(text = stringResource(Res.string.dark), modifier = Modifier.padding(end = 5.dp))
                 Switch(onCheckedChange = changeTheme, checked = dark)
             }
         }
@@ -200,24 +206,25 @@ fun ZWList(paddingValues: PaddingValues, dark:Boolean, changeTheme:(Boolean)->Un
             }
         }else{
             Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()){
-                CopyZWCharacter("\u200B" ,"ZW space")
-                CopyZWCharacter("\uFEFF" ,"ZW no-break space")
+                CopyZWCharacter(list[0].first, list[0].second)
+                CopyZWCharacter(list[1].first, list[1].second)
             }
             Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()){
-                CopyZWCharacter("\u200C" ,"ZW non-joiner")
-                CopyZWCharacter("\u200D" ,"ZW joiner")
+                CopyZWCharacter(list[2].first, list[2].second)
+                CopyZWCharacter(list[3].first, list[3].second)
             }
             Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()){
-                CopyZWCharacter("\u200E" ,"LTR mark")
-                CopyZWCharacter("\u200F" ,"RTL mark")
+                CopyZWCharacter(list[4].first, list[4].second)
+                CopyZWCharacter(list[5].first, list[5].second)
             }
         }
         Spacer(modifier = Modifier.padding(top = 30.dp))
-        if(getPlatform()!="desktop"){TextButton(onClick = showDialog){Text("About")}}
+        if(getPlatform()!="desktop"){TextButton(onClick = showDialog){Text(stringResource(Res.string.about))}}
         Spacer(Modifier.padding(top = 30.dp, bottom = paddingValues.calculateBottomPadding()))
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun InsertZW(paddingValues: PaddingValues){
     var input by remember{mutableStateOf("")}
@@ -234,22 +241,22 @@ fun InsertZW(paddingValues: PaddingValues){
         Spacer(Modifier.padding(vertical = 10.dp))
         TextField(
             value = input, onValueChange = {input = it},
-            label = {Text(text = "Input")},
+            label = {Text(text = stringResource(Res.string.input))},
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = if(input.contains("\n")){ {ExpandIcon(expandInput) {expandInput = !expandInput}} }else{ null },
             singleLine = !expandInput
         )
         Spacer(Modifier.padding(vertical = 3.dp))
         Text(
-            text = "Add ZW character type:",
+            text = stringResource(Res.string.zw_char_type_is),
             modifier = Modifier.align(Alignment.Start).padding(start = 6.dp, top = 6.dp, bottom = 2.dp).animateContentSize()
         )
-        RadioButtonItem(text = "ZW space", selected = selectedZW=="b", onClick = {selectedZW = "b"})
-        RadioButtonItem(text = "ZW no-break space", selected = selectedZW=="feff", onClick = {selectedZW = "feff"})
-        RadioButtonItem(text = "ZW non-joiner", selected = selectedZW=="c", onClick = {selectedZW = "c"})
-        RadioButtonItem(text = "ZW joiner", selected = selectedZW=="d", onClick = {selectedZW = "d"})
-        RadioButtonItem(text = "LTR mark", selected = selectedZW=="e", onClick = {selectedZW = "e"})
-        RadioButtonItem(text = "RTL mark", selected = selectedZW=="f", onClick = {selectedZW = "f"})
+        RadioButtonItem(text = stringResource(Res.string.zw_space), selected = selectedZW=="b", onClick = {selectedZW = "b"})
+        RadioButtonItem(text = stringResource(Res.string.zw_no_break_space), selected = selectedZW=="feff", onClick = {selectedZW = "feff"})
+        RadioButtonItem(text = stringResource(Res.string.zw_non_joiner), selected = selectedZW=="c", onClick = {selectedZW = "c"})
+        RadioButtonItem(text = stringResource(Res.string.zw_joiner), selected = selectedZW=="d", onClick = {selectedZW = "d"})
+        RadioButtonItem(text = stringResource(Res.string.ltr_mark), selected = selectedZW=="e", onClick = {selectedZW = "e"})
+        RadioButtonItem(text = stringResource(Res.string.rtl_mark), selected = selectedZW=="f", onClick = {selectedZW = "f"})
         Button(
             onClick = {
                 focusManager.clearFocus()
@@ -260,14 +267,14 @@ fun InsertZW(paddingValues: PaddingValues){
                 expandInput = false
             }
         ){
-            Text(text = " Go! ")
+            Text(text = stringResource(Res.string.go))
         }
         Spacer(Modifier.padding(vertical = 3.dp))
         AnimatedVisibility(output!=""){
             Column{
                 OutlinedTextField(
                     value = output, onValueChange = {output = it},
-                    label = {Text(text = "Output")}, readOnly = true,
+                    label = {Text(text = stringResource(Res.string.output))}, readOnly = true,
                     trailingIcon = if(output.contains("\n")){ {ExpandIcon(expandOutput) {expandOutput = !expandOutput}} }else{ null },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = !expandOutput
@@ -275,7 +282,7 @@ fun InsertZW(paddingValues: PaddingValues){
                 Spacer(Modifier.padding(vertical = 2.dp))
                 Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()){
                     Text(
-                        text = "Added $stats ZW chars.",
+                        text = stringResource(Res.string.insert_stat,stats.toString()),
                         modifier = Modifier.padding(start = 5.dp)
                     )
                     CopyButton("Copy", output)
@@ -286,6 +293,7 @@ fun InsertZW(paddingValues: PaddingValues){
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun RemoveZW(paddingValues: PaddingValues){
     var input by remember{mutableStateOf("")}
@@ -301,7 +309,7 @@ fun RemoveZW(paddingValues: PaddingValues){
         Spacer(Modifier.padding(vertical = 10.dp))
         TextField(
             value = input, onValueChange = {input = it},
-            label = {Text(text = "Input")},
+            label = {Text(text = stringResource(Res.string.input))},
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = if(input.contains("\n")){ {ExpandIcon(expandInput) {expandInput = !expandInput}} }else{ null },
             singleLine = !expandInput
@@ -317,14 +325,14 @@ fun RemoveZW(paddingValues: PaddingValues){
                 expandInput = false
             }
         ){
-            Text(text = " Go! ")
+            Text(text = stringResource(Res.string.go))
         }
         Spacer(Modifier.padding(vertical = 3.dp))
         AnimatedVisibility(output!=""){
             Column{
                 OutlinedTextField(
                     value = output, onValueChange = {output = it},
-                    label = {Text(text = "Output")}, readOnly = true,
+                    label = {Text(text = stringResource(Res.string.output))}, readOnly = true,
                     trailingIcon = if(output.contains("\n")){ {ExpandIcon(expandOutput) {expandOutput = !expandOutput}} }else{ null },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = !expandOutput
@@ -332,10 +340,10 @@ fun RemoveZW(paddingValues: PaddingValues){
                 Spacer(Modifier.padding(vertical = 2.dp))
                 Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()){
                     Text(
-                        text = "Removed $stat ZW chars.",
+                        text = stringResource(Res.string.remove_stat,stat.toString()),
                         modifier = Modifier.padding(start = 5.dp)
                     )
-                    CopyButton("Copy", output)
+                    CopyButton(stringResource(Res.string.copy), output)
                 }
             }
         }

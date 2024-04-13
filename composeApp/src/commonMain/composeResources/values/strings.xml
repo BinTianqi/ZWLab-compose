@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="zero_width_lab">Zero width Lab</string>
+    <string name="zw_lab">ZW Lab</string>
+
+    <string name="copy">Copy</string>
+    <string name="copied">Copied</string>
+    <string name="input">Input</string>
+    <string name="output">Output</string>
+    <string name="visible_text">Visible text</string>
+    <string name="hidden_text">Hidden text</string>
+    <string name="go"> Go! </string>
+    <string name="expand_textfield">Expand textfield</string>
+    <string name="shrink_textfield">Shrink textfield</string>
+
+    <string name="home">Home</string>
+    <string name="dark">Dark</string>
+    <string name="zw_space">ZW space</string>
+    <string name="zw_no_break_space">ZW no-break space</string>
+    <string name="zw_non_joiner">ZW non-joiner</string>
+    <string name="zw_joiner">ZW joiner</string>
+    <string name="ltr_mark">LTR mark</string>
+    <string name="rtl_mark">RTL mark</string>
+
+    <string name="about">About</string>
+    <string name="author_info">Author: Bin Tianqi</string>
+    <string name="project_on_github">Source code available on Github. </string>
+    <string name="project_on_github_url">github.com/BinTianqi/ZWLab</string>
+    <string name="copy_link">Copy link</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="insert">Insert</string>
+    <string name="insert_stat">Added %1$s ZW chars. </string>
+    <string name="zw_char_type_is">ZW character type: </string>
+
+    <string name="remove">Remove</string>
+    <string name="remove_stat">Removed %1$s ZW chars. </string>
+
+    <string name="encode">Encode</string>
+
+    <string name="decode">Decode</string>
+    <string name="copy_visible">Copy visible</string>
+    <string name="copy_hidden">Copy hidden</string>
+</resources>
