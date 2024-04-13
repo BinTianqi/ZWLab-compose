@@ -17,7 +17,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.*
@@ -187,8 +186,7 @@ fun AboutDialog(showDialog:Boolean, onDismiss:()->Unit){
                     )
                 }
             },
-            confirmButton = {TextButton(onClick = onDismiss){Text(text = stringResource(Res.string.confirm))} },
-            properties = DialogProperties(dismissOnClickOutside = false)
+            confirmButton = {TextButton(onClick = onDismiss){Text(text = stringResource(Res.string.confirm))} }
         )
     }
 }
