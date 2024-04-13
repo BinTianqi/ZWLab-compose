@@ -1,5 +1,6 @@
 package com.bintianqi.zwlab
 
+import AboutDialog
 import DecodeZW
 import EncodeZW
 import InsertZW
@@ -9,6 +10,7 @@ import ZWList
 import android.app.Activity
 import android.os.Build.VERSION
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
@@ -37,8 +40,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-        val context = applicationContext
         setContent {
+            val context = LocalContext.current
             var inited by remember{mutableStateOf(false)}
             var dark by remember{mutableStateOf(false)}
             if(!inited){ dark = isSystemInDarkTheme(); inited = true}
@@ -46,6 +49,7 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit){
                 while(true){
                     if(writeClipBoardContent!=""){
+                        Log.e("ZW","Android:WriteClipboard")
                         copyToClipBoard(context, writeClipBoardContent)
                         writeClipBoardContent = ""
                     }
@@ -74,6 +78,7 @@ class MainActivity : ComponentActivity() {
 private fun AppContent(dark:Boolean, changeTheme:(Boolean)->Unit){
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
+    var showDialog by remember{mutableStateOf(false)}
     Scaffold(
         bottomBar = {
             NavBar(backStackEntry?.destination?.route?:"Home"){
@@ -94,9 +99,10 @@ private fun AppContent(dark:Boolean, changeTheme:(Boolean)->Unit){
         ){
             composable(route = "Insert"){ InsertZW(paddingValues) }
             composable(route = "Remove"){ RemoveZW(paddingValues) }
-            composable(route = "Home"){ ZWList(paddingValues, dark, changeTheme) }
+            composable(route = "Home"){ ZWList(paddingValues, dark, changeTheme){showDialog = true} }
             composable(route = "Encode"){ EncodeZW(paddingValues) }
             composable(route = "Decode"){ DecodeZW(paddingValues) }
         }
+        AboutDialog(showDialog){showDialog=false}
     }
 }

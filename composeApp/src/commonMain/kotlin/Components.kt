@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -16,16 +17,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import zwlab.composeapp.generated.resources.*
-import zwlab.composeapp.generated.resources.Res
-import zwlab.composeapp.generated.resources.check_fill0
-import zwlab.composeapp.generated.resources.content_copy_fill0
-import zwlab.composeapp.generated.resources.expand_more_fill0
 
 @Composable
 fun RadioButtonItem(text:String, selected:Boolean, onClick:()->Unit){
@@ -145,31 +143,6 @@ fun CopyButton(text:String, content:String, minWidth:Dp=Dp.Unspecified){
 @Composable
 fun NavBar(page:String, setPage:(String)->Unit){
     NavigationBar{
-        /*NavigationBarItem(
-            selected = page == "Insert", label = {Text(text = "Insert")},
-            onClick = {setPage("Insert")},
-            icon = {Icon(painterResource(Res.drawable.add_fill0),contentDescription = null)}
-        )
-        NavigationBarItem(
-            selected = page == "Remove", label = {Text(text = "Remove")},
-            onClick = {setPage("Remove")},
-            icon = {Icon(painterResource(Res.drawable.remove_fill0),contentDescription = null)}
-        )
-        NavigationBarItem(
-            selected = page == "Home", label = {Text(text = "ZW list")},
-            onClick = {setPage("Home")},
-            icon = {Icon(painterResource(Res.drawable.format_list_bulleted_fill0),contentDescription = null)}
-        )
-        NavigationBarItem(
-            selected = page == "Encode", label = {Text(text = "Encode")},
-            onClick = {setPage("Encode")},
-            icon = {Icon(painterResource(Res.drawable.lock_fill0),contentDescription = null)}
-        )
-        NavigationBarItem(
-            selected = page == "Decode", label = {Text(text = "Decode")},
-            onClick = {setPage("Decode")},
-            icon = {Icon(painterResource(Res.drawable.lock_open_right_fill0),contentDescription = null)}
-        )*/
         for(item in pageList){
             NavigationBarItem(
                 selected = page==item.id, label = {Text(text = item.name)},
@@ -177,6 +150,43 @@ fun NavBar(page:String, setPage:(String)->Unit){
                 icon = {Icon(painterResource(item.icon),contentDescription = null)}
             )
         }
+    }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun AboutDialog(showDialog:Boolean, onDismiss:()->Unit){
+    if(showDialog){
+        var copying by remember{mutableStateOf(false)}
+        val coroutine = rememberCoroutineScope()
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            icon = {Icon(painterResource(Res.drawable.info_fill0), contentDescription = "App icon")},
+            title = {Text(text = "ZW Lab")},
+            text = {
+                Column{
+                    Text(text = "Author: BinTianqi")
+                    Text(text = "Source code available on Github")
+                    SelectionContainer{
+                        Text(text = "github.com/BinTianqi/ZWLab", color = colorScheme.onPrimaryContainer)
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        copying = true
+                        coroutine.launch{ delay(1500); copying = false}
+                        writeClipBoard("github.com/BinTianqi/ZWLab")
+                    },
+                    modifier = Modifier.width(100.dp)
+                ){
+                    Text(text = if(copying){"Copied"}else{"Copy link"}, modifier = Modifier.animateContentSize())
+                }
+            },
+            confirmButton = {TextButton(onClick = onDismiss){Text(text = "OK")} },
+            properties = DialogProperties(dismissOnClickOutside = false)
+        )
     }
 }
 

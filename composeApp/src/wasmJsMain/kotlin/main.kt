@@ -10,7 +10,8 @@ import androidx.compose.ui.window.CanvasBasedWindow
 fun main() {
     CanvasBasedWindow(canvasElementId = "ComposeTarget"){
         var dark by remember{mutableStateOf(false)}
-        dark = isSystemInDarkTheme()
+        var inited by remember{mutableStateOf(false)}
+        if(!inited){dark = isSystemInDarkTheme(); inited = true}
         App(dark){dark=it}
     }
 }

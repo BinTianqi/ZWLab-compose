@@ -9,14 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.getTheme
 
 @Composable
 fun App(dark: Boolean, changeTheme: (Boolean) -> Unit) {
     var page by remember{mutableStateOf("Home")}
+    var showDialog by remember{mutableStateOf(false)}
     MaterialTheme(
         colorScheme = getTheme(dark)
     ){
@@ -25,9 +23,10 @@ fun App(dark: Boolean, changeTheme: (Boolean) -> Unit) {
         ){paddingValues->
             if(page=="Insert"){ InsertZW(paddingValues) }
             if(page=="Remove"){ RemoveZW(paddingValues) }
-            if(page=="Home"){ ZWList(paddingValues, dark, changeTheme) }
+            if(page=="Home"){ ZWList(paddingValues, dark, changeTheme){showDialog = true} }
             if(page=="Encode"){ EncodeZW(paddingValues) }
             if(page=="Decode"){ DecodeZW(paddingValues) }
+            AboutDialog(showDialog){showDialog=false}
         }
     }
 }
@@ -168,7 +167,7 @@ fun EncodeZW(paddingValues: PaddingValues){
 }
 
 @Composable
-fun ZWList(paddingValues: PaddingValues, dark:Boolean, changeTheme:(Boolean)->Unit){
+fun ZWList(paddingValues: PaddingValues, dark:Boolean, changeTheme:(Boolean)->Unit, showDialog:()->Unit){
     val list = listOf(
         Pair("\u200B" ,"ZW space"),
         Pair("\uFEFF" ,"ZW no-break space"),
@@ -213,7 +212,9 @@ fun ZWList(paddingValues: PaddingValues, dark:Boolean, changeTheme:(Boolean)->Un
                 CopyZWCharacter("\u200F" ,"RTL mark")
             }
         }
-        Spacer(Modifier.padding(top = 60.dp, bottom = paddingValues.calculateBottomPadding()))
+        Spacer(modifier = Modifier.padding(top = 30.dp))
+        if(getPlatform()!="desktop"){TextButton(onClick = showDialog){Text("About")}}
+        Spacer(Modifier.padding(top = 30.dp, bottom = paddingValues.calculateBottomPadding()))
     }
 }
 
