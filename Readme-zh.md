@@ -2,11 +2,17 @@
 
 [English](Readme.md)
 
+## 这个项目已经停止维护
+
+显然，这个项目不适合使用Kotlin + Compose，那太笨
+重了。我用Vue + Vite + TypeScript重新制作了一个Z
+WLab，你可以访问[这个网页](https://zwlab.pages.dev/)，或者查看[源代码](https://github.com/BinTianqi/ZWLab/)
+
 ## 简介
 
 使用 Kotlin + Compose multiplatform 制作
 
-支持的平台: Windows, Android, web(wasmJs)
+支持的平台: ~~Windows,~~ Android, ~~web(wasmJs)~~
 
 ## 功能
 

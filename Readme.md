@@ -2,11 +2,15 @@
 
 [简体中文](Readme-zh.md)
 
+## This project has stopped maintenance
+
+Obviously, this project is not suitable for Kotlin + Compose, which is too bulky. I remade ZWLab with Vue + Vite + TypeScript. You can visit [this page](https://zwlab.pages.dev/) or view its [source code](https://github.com/BinTianqi/ZWLab/).
+
 ## Introduction
 
 Made with Kotlin + Compose multiplatform
 
-Supported platforms: Windows, Android, web(wasmJs)
+Supported platforms: ~~Windows,~~ Android, ~~web(wasmJs)~~
 
 ## Features
 
